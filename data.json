@@ -162,5 +162,13 @@
       "amount": 299
     }
   ],
-  "savings_expenses": []
+  "savings_expenses": [
+    {
+      "id": 1,
+      "date": "2026-05-20",
+      "category": "Subscriber Painter Fur",
+      "description": "-",
+      "amount": 2.94
+    }
+  ]
 }
