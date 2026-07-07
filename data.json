@@ -1,0 +1,17 @@
+{
+  "projects": [],
+  "ads": [],
+  "withdrawals": [
+    {
+      "date": "2026-07-07",
+      "amount": 300
+    },
+    {
+      "date": "2026-05-07",
+      "amount": 299
+    }
+  ],
+  "savings_expenses": [
+    
+  ]
+}

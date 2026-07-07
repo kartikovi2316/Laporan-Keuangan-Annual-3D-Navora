@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiverr Partnership Tracker | Kartiko & Afief</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased selection:bg-teal-500 selection:text-slate-900">
+
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700/60 sticky top-0 z-40 p-5 shadow-lg">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400 tracking-wide">FIVERR PARTNERSHIP</h1>
+                    <p class="text-xs text-slate-400 font-medium">Annual Financial Matrix &bull; Kartiko & Afief</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openModal('modal-json-export')" class="bg-slate-700 hover:bg-teal-500 hover:text-slate-950 text-teal-400 text-xs font-bold px-4 py-2 rounded-lg border border-teal-500/30 hover:border-teal-500 transition-all duration-300 shadow-md cursor-pointer">
+                        &nbsp;Salin JSON untuk GitHub
+                    </button>
+                    <button onclick="openModal('modal-quick-add')" class="bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 text-xs font-black px-4 py-2 rounded-lg transition-all duration-300 shadow-lg shadow-teal-500/20 active:scale-95 cursor-pointer">
+                        ➕ Shortcut Tambah Data
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+            
+            <!-- NEW HIGH-FIDELITY ANNUAL VS MONTHLY SEGMENTED CONTROLLER -->
+            <div class="bg-slate-800/40 border border-slate-700/50 p-4 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4 shadow-inner">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full md:w-auto">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-teal-400">📊 Rentang Analisis Atas:</span>
+                    </div>
+                    <div class="inline-flex rounded-lg p-0.5 bg-slate-900 border border-slate-700 w-full sm:w-auto">
+                        <button onclick="setPeriodMode('annual')" id="mode-annual" class="flex-1 sm:flex-none px-5 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer bg-teal-500 text-slate-950 shadow-md">
+                            Tahunan (Annual)
+                        </button>
+                        <button onclick="setPeriodMode('monthly')" id="mode-monthly" class="flex-1 sm:flex-none px-5 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer text-slate-400 hover:text-slate-200">
+                            Bulanan (Monthly)
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Month Selector (Conditionally visible based on segmented controller state) -->
+                <div id="month-select-container" class="hidden flex items-center gap-3 w-full md:w-auto border-t md:border-t-0 border-slate-700/50 pt-3 md:pt-0">
+                    <label for="kpi-month-select" class="text-xs font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap">Pilih Bulan Pembagian:</label>
+                    <select id="kpi-month-select" onchange="renderKPICards()" class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-1.5 text-xs font-bold text-teal-400 focus:outline-none focus:border-teal-400 cursor-pointer w-full md:w-48 shadow-md transition">
+                        <option value="0">Januari</option>
+                        <option value="1">Februari</option>
+                        <option value="2">Maret</option>
+                        <option value="3">April</option>
+                        <option value="4">Mei</option>
+                        <option value="5">Juni</option>
+                        <option value="6">Juli</option>
+                        <option value="7">Agustus</option>
+                        <option value="8">September</option>
+                        <option value="9">Oktober</option>
+                        <option value="10">November</option>
+                        <option value="11">Desember</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- KPI Summary Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div class="bg-slate-800/60 border border-slate-700/50 p-4.5 rounded-2xl shadow-sm hover:border-teal-500/40 transition-all duration-300 group">
+                    <p id="kpi-title-withdrawal" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-300 transition-colors">Total Penarikan Riil</p>
+                    <p id="kpi-total-withdrawal" class="text-2xl font-black text-teal-400 mt-1">$0.00</p>
+                    <p id="kpi-sub-withdrawal" class="text-[10px] text-slate-500 mt-1 font-mono font-medium"></p>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700/50 p-4.5 rounded-2xl shadow-sm hover:border-amber-500/40 transition-all duration-300 group">
+                    <p id="kpi-title-savings" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-300 transition-colors">Saldo Kas Tabungan</p>
+                    <p id="kpi-savings-balance" class="text-2xl font-black text-amber-400 mt-1">$0.00</p>
+                    <p id="kpi-sub-savings" class="text-[10px] text-slate-500 mt-1 font-mono font-medium"></p>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700/50 p-4.5 rounded-2xl shadow-sm hover:border-rose-500/40 transition-all duration-300 group">
+                    <p id="kpi-title-exp" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-300 transition-colors">Total Pengeluaran Tabungan</p>
+                    <p id="kpi-total-savings-expenses" class="text-2xl font-black text-rose-400 mt-1">$0.00</p>
+                    <p id="kpi-sub-exp" class="text-[10px] text-slate-500 mt-1 font-mono font-medium"></p>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700/50 p-4.5 rounded-2xl shadow-sm hover:border-blue-500/40 transition-all duration-300 group">
+                    <p id="kpi-title-kartiko" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-300 transition-colors">Hasil Kartiko (35%)</p>
+                    <p id="kpi-share-kartiko" class="text-2xl font-black text-blue-400 mt-1">$0.00</p>
+                    <p id="kpi-sub-kartiko" class="text-[10px] text-slate-500 mt-1 font-mono font-medium"></p>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700/50 p-4.5 rounded-2xl shadow-sm hover:border-purple-500/40 transition-all duration-300 group">
+                    <p id="kpi-title-afief" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-300 transition-colors">Hasil Afief (35%)</p>
+                    <p id="kpi-share-afief" class="text-2xl font-black text-purple-400 mt-1">$0.00</p>
+                    <p id="kpi-sub-afief" class="text-[10px] text-slate-500 mt-1 font-mono font-medium"></p>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700/50 p-4.5 rounded-2xl shadow-sm hover:border-orange-500/40 transition-all duration-300 group">
+                    <p id="kpi-title-retained" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-300 transition-colors">Laba Ditahan (Selesai)</p>
+                    <p id="kpi-retained-uncured" class="text-2xl font-black text-orange-400 mt-1">$0.00</p>
+                    <p id="kpi-sub-retained" class="text-[10px] text-slate-500 mt-1 font-mono font-medium"></p>
+                </div>
+                <div class="bg-slate-800/60 border border-slate-700/50 p-4.5 rounded-2xl shadow-sm hover:border-sky-500/40 transition-all duration-300 group">
+                    <p id="kpi-title-potential" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-300 transition-colors">Potensi Laba (Progress)</p>
+                    <p id="kpi-potential-progress" class="text-2xl font-black text-sky-400 mt-1">$0.00</p>
+                    <p id="kpi-sub-potential" class="text-[10px] text-slate-500 mt-1 font-mono font-medium"></p>
+                </div>
+            </div>
+
+            <!-- Enhanced Navigation Tabs Menu -->
+            <nav class="flex flex-wrap gap-1.5 p-1.5 bg-slate-800/40 border border-slate-700/40 rounded-xl overflow-x-auto shadow-inner">
+                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300 ease-out cursor-pointer hover:bg-slate-700/40 hover:text-slate-200 text-teal-400 bg-slate-800 border border-slate-700/60 shadow-md">
+                    📊 Dashboard Bulanan
+                </button>
+                <button onclick="switchTab('projects')" id="btn-projects" class="px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300 ease-out cursor-pointer hover:bg-slate-700/60 hover:text-teal-400 text-slate-400 border border-transparent">
+                    📂 Daftar Projek
+                </button>
+                <button onclick="switchTab('ads')" id="btn-ads" class="px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300 ease-out cursor-pointer hover:bg-slate-700/60 hover:text-teal-400 text-slate-400 border border-transparent">
+                    📢 Fiverr Ads
+                </button>
+                <button onclick="switchTab('withdrawals')" id="btn-withdrawals" class="px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300 ease-out cursor-pointer hover:bg-slate-700/60 hover:text-teal-400 text-slate-400 border border-transparent">
+                    💸 Histori Penarikan
+                </button>
+                <button onclick="switchTab('expenses')" id="btn-expenses" class="px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-300 ease-out cursor-pointer hover:bg-slate-700/60 hover:text-teal-400 text-slate-400 border border-transparent">
+                    🛒 Pengeluaran Tabungan
+                </button>
+            </nav>
+
+            <!-- TAB CONTENT CONTAINER -->
+            <div class="bg-slate-800/90 border border-slate-700/70 rounded-2xl shadow-xl overflow-hidden p-4 md:p-6">
+                <!-- DASHBOARD BULANAN -->
+                <div id="tab-dashboard" class="tab-content active">
+                    <h3 class="text-lg font-bold text-slate-200 mb-4">Laporan Pembagian Hasil Bulanan (Annual Breakdown)</h3>
+                    <div class="overflow-x-auto rounded-xl border border-slate-700/60">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-900 border-b border-slate-700 text-slate-300 font-semibold">
+                                    <th class="p-4">Bulan</th>
+                                    <th class="p-4 text-right">Total Penarikan (USD)</th>
+                                    <th class="p-4 text-right text-amber-400">Tabungan Bersama (30%)</th>
+                                    <th class="p-4 text-right text-blue-400">Bagi Hasil Kartiko (35%)</th>
+                                    <th class="p-4 text-right text-purple-400">Bagi Hasil Afief (35%)</th>
+                                    <th class="p-4 text-right text-rose-400">Pengeluaran Tabungan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-dashboard-body" class="divide-y divide-slate-700/40"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- DAFTAR PROJEK -->
+                <div id="tab-projects" class="tab-content">
+                    <h3 class="text-lg font-bold text-slate-200 mb-4">Database Pipeline Projek Fiverr</h3>
+                    <div class="overflow-x-auto rounded-xl border border-slate-700/60">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-900 border-b border-slate-700 text-slate-300">
+                                    <th class="p-4">Tanggal</th>
+                                    <th class="p-4">No. Order</th>
+                                    <th class="p-4">Klien</th>
+                                    <th class="p-4">Deadline</th>
+                                    <th class="p-4 text-right">Gross (USD)</th>
+                                    <th class="p-4 text-right">Fiverr Fee (20%)</th>
+                                    <th class="p-4 text-right text-teal-400">Net Fix (USD)</th>
+                                    <th class="p-4 text-center">Status Selesai</th>
+                                    <th class="p-4 text-center">Uang Cair (14 Hari)</th>
+                                    <th class="p-4 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-projects-body" class="divide-y divide-slate-700/40 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- FIVERR ADS -->
+                <div id="tab-ads" class="tab-content">
+                    <h3 class="text-lg font-bold text-slate-200 mb-4">Biaya Iklan Gig (Fiverr Ads)</h3>
+                    <div class="overflow-x-auto rounded-xl border border-slate-700/60 max-w-2xl">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-900 border-b border-slate-700 text-slate-300">
+                                    <th class="p-4 w-16">No</th>
+                                    <th class="p-4">Tanggal Pengeluaran</th>
+                                    <th class="p-4 text-right text-rose-400">Jumlah (USD)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-ads-body" class="divide-y divide-slate-700/40 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- HISTORI PENARIKAN -->
+                <div id="tab-withdrawals" class="tab-content">
+                    <h3 class="text-lg font-bold text-slate-200 mb-4">Histori Penarikan Dana via PayPal</h3>
+                    <div class="overflow-x-auto rounded-xl border border-slate-700/60">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-900 border-b border-slate-700 text-slate-300">
+                                    <th class="p-4">Tanggal Penarikan</th>
+                                    <th class="p-4 text-right">Total Penarikan (USD)</th>
+                                    <th class="p-4 text-right text-amber-400">Tabungan Bersama (30%)</th>
+                                    <th class="p-4 text-right text-blue-400">Kartiko (35%)</th>
+                                    <th class="p-4 text-right text-purple-400">Afief (35%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-withdrawals-body" class="divide-y divide-slate-700/40 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- PENGELUARAN TABUNGAN -->
+                <div id="tab-expenses" class="tab-content">
+                    <h3 class="text-lg font-bold text-slate-200 mb-4">Log Pengeluaran Operasional Tabungan Bersama</h3>
+                    <div class="overflow-x-auto rounded-xl border border-slate-700/60">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-900 border-b border-slate-700 text-slate-300">
+                                    <th class="p-4 w-16">No</th>
+                                    <th class="p-4">Tanggal</th>
+                                    <th class="p-4">Kategori</th>
+                                    <th class="p-4">Deskripsi / Keterangan</th>
+                                    <th class="p-4 text-right text-rose-400">Jumlah (USD)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-expenses-body" class="divide-y divide-slate-700/40 text-slate-300"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL 1: SHORTCUT QUICK ADD -->
+    <div id="modal-quick-add" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+            <div class="bg-slate-900 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="text-base font-bold text-slate-200">➕ Shortcut Input Data Baru</h3>
+                <button onclick="closeModal('modal-quick-add')" class="text-slate-400 hover:text-slate-200 font-bold text-lg cursor-pointer">&times;</button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1.5">Pilih Kategori Sheet</label>
+                    <select id="form-type" onchange="toggleFormFields()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                        <option value="project">Data Penjualan / Projek</option>
+                        <option value="ads">Fiverr Ads</option>
+                        <option value="withdrawal">Penarikan Dana (PayPal)</option>
+                        <option value="expense">Pengeluaran Tabungan Bersama</option>
+                    </select>
+                </div>
+                <hr class="border-slate-700/50">
+                <form id="dynamic-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                    <div id="field-date">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Tanggal</label>
+                        <input type="date" required id="input-date" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                    </div>
+                    <div id="project-fields" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Nomor Order</label>
+                                <input type="text" id="input-order-no" placeholder="#FVR..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Klien</label>
+                                <input type="text" id="input-client" placeholder="Nama Perusahaan/User" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Deadline Projek</label>
+                            <input type="date" id="input-deadline" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <label class="flex items-center gap-2 bg-slate-900/60 p-2.5 rounded-lg border border-slate-700/50 cursor-pointer text-xs">
+                                <input type="checkbox" id="input-status-complete" class="accent-teal-500"> Selesai
+                            </label>
+                            <label class="flex items-center gap-2 bg-slate-900/60 p-2.5 rounded-lg border border-slate-700/50 cursor-pointer text-xs">
+                                <input type="checkbox" id="input-status-cleared" class="accent-teal-500"> Uang Cair
+                            </label>
+                        </div>
+                    </div>
+                    <div id="expense-fields" class="hidden space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Kategori Pengeluaran</label>
+                            <input type="text" id="input-category" placeholder="Software / Servis / Barang" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Keterangan / Deskripsi</label>
+                            <input type="text" id="input-description" placeholder="Deskripsi peruntukan dana..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label id="label-amount" class="block text-xs font-semibold text-slate-300 mb-1">Nilai / Jumlah Uang (USD)</label>
+                        <input type="number" step="0.01" required id="input-amount" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                    </div>
+                    <div class="flex justify-end gap-2 pt-4 border-t border-slate-700/50">
+                        <button type="button" onclick="closeModal('modal-quick-add')" class="px-4 py-2 text-xs font-bold bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition cursor-pointer">Batal</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-black bg-teal-500 text-slate-950 rounded-lg hover:bg-teal-400 transition cursor-pointer shadow-md">Masukkan Data</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: EDIT PROJECT SPECIFIC -->
+    <div id="modal-edit-project" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+            <div class="bg-slate-900 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="text-base font-bold text-amber-400">✏️ Edit / Update Data Projek</h3>
+                <button onclick="closeModal('modal-edit-project')" class="text-slate-400 hover:text-slate-200 font-bold text-lg cursor-pointer">&times;</button>
+            </div>
+            <div class="p-6">
+                <form id="edit-project-form" onsubmit="handleEditProjectSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Tanggal Masuk</label>
+                        <input type="date" required id="edit-p-date" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Nomor Order</label>
+                            <input type="text" id="edit-p-order-no" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Klien</label>
+                            <input type="text" id="edit-p-client" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Deadline Projek</label>
+                        <input type="date" id="edit-p-deadline" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Nilai Projek Gross (USD)</label>
+                        <input type="number" step="0.01" required id="edit-p-gross" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-teal-500">
+                    </div>
+                    
+                    <div class="p-3 bg-slate-900/40 rounded-xl border border-slate-700/50 space-y-2.5">
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Perbarui Status Kontrol Projek</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center gap-2 bg-slate-900 border border-slate-700 p-2.5 rounded-lg cursor-pointer text-xs font-medium text-slate-200 hover:border-teal-500/50 transition">
+                                <input type="checkbox" id="edit-p-status-complete" class="accent-teal-500 w-4 h-4"> Status Selesai
+                            </label>
+                            <label class="flex items-center gap-2 bg-slate-900 border border-slate-700 p-2.5 rounded-lg cursor-pointer text-xs font-medium text-slate-200 hover:border-teal-500/50 transition">
+                                <input type="checkbox" id="edit-p-status-cleared" class="accent-teal-500 w-4 h-4"> Status Uang Cair
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-4 border-t border-slate-700/50">
+                        <button type="button" onclick="closeModal('modal-edit-project')" class="px-4 py-2 text-xs font-bold bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition cursor-pointer">Batal</button>
+                        <button type="submit" class="px-5 py-2 text-xs font-black bg-amber-500 text-slate-950 rounded-lg hover:bg-amber-400 transition cursor-pointer shadow-md">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: EXPORT JSON CODE -->
+    <div id="modal-json-export" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+            <div class="bg-slate-900 px-6 py-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="text-base font-bold text-teal-400">📦 Salin Kode Sinkronisasi GitHub</h3>
+                <button onclick="closeModal('modal-json-export')" class="text-slate-400 hover:text-slate-200 font-bold text-lg cursor-pointer">&times;</button>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-xs text-slate-400 leading-relaxed">Klik tombol di bawah ini, lalu buka file <span class="text-teal-400 font-mono">data.json</span> di repositori GitHub Anda. Klik icon pensil (Edit), hapus seluruh isinya, lalu paste dan lakukan commit.</p>
+                <textarea id="json-textarea" readonly class="w-full h-64 bg-slate-900 border border-slate-700 rounded-xl p-3 font-mono text-xs text-emerald-400 focus:outline-none focus:ring-1 focus:ring-teal-500/50"></textarea>
+                <div class="flex justify-end gap-2">
+                    <button onclick="closeModal('modal-json-export')" class="px-4 py-2 text-xs font-semibold bg-slate-700 rounded-lg hover:bg-slate-600 transition cursor-pointer">Tutup</button>
+                    <button onclick="copyToClipboard()" class="px-5 py-2 text-xs font-black bg-teal-500 text-slate-950 rounded-lg hover:bg-teal-400 transition cursor-pointer shadow-md">📋 Copy text</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // System Data State Base
+        let globalState = { projects: [], ads: [], withdrawals: [], savings_expenses: [] };
+        let currentEditProjectIndex = null;
+        let currentViewMode = "annual"; // Core Control: "annual" or "monthly"
+        
+        const fmt = val => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val || 0);
+        const monthsName = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+        function openModal(id) {
+            if(id === 'modal-json-export') {
+                document.getElementById('json-textarea').value = JSON.stringify(globalState, null, 2);
+            }
+            document.getElementById(id).classList.remove('hidden');
+        }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            
+            document.querySelectorAll('nav button').forEach(el => {
+                el.classList.remove('border-slate-700/60', 'text-teal-400', 'bg-slate-800', 'shadow-md');
+                el.classList.add('border-transparent', 'text-slate-400');
+            });
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.remove('border-transparent', 'text-slate-400');
+            activeBtn.classList.add('border-slate-700/60', 'text-teal-400', 'bg-slate-800', 'shadow-md');
+        }
+
+        function setPeriodMode(mode) {
+            currentViewMode = mode;
+            const btnAnnual = document.getElementById('mode-annual');
+            const btnMonthly = document.getElementById('mode-monthly');
+            const monthSelector = document.getElementById('month-select-container');
+
+            if (mode === 'annual') {
+                btnAnnual.className = "flex-1 sm:flex-none px-5 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer bg-teal-500 text-slate-950 shadow-md";
+                btnMonthly.className = "flex-1 sm:flex-none px-5 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer text-slate-400 hover:text-slate-200";
+                monthSelector.classList.add('hidden');
+            } else {
+                btnMonthly.className = "flex-1 sm:flex-none px-5 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer bg-teal-500 text-slate-950 shadow-md";
+                btnAnnual.className = "flex-1 sm:flex-none px-5 py-1.5 text-xs font-bold rounded-md transition-all cursor-pointer text-slate-400 hover:text-slate-200";
+                monthSelector.classList.remove('hidden');
+            }
+            renderKPICards();
+        }
+
+        function toggleFormFields() {
+            const type = document.getElementById('form-type').value;
+            const projFields = document.getElementById('project-fields');
+            const expFields = document.getElementById('expense-fields');
+            const lblAmt = document.getElementById('label-amount');
+
+            projFields.classList.add('hidden');
+            expFields.classList.add('hidden');
+
+            if(type === 'project') {
+                projFields.classList.remove('hidden');
+                lblAmt.innerText = "Nilai Projek Gross (USD)";
+            } else if(type === 'expense') {
+                expFields.classList.remove('hidden');
+                lblAmt.innerText = "Jumlah Pengeluaran Tabungan (USD)";
+            } else if(type === 'ads') {
+                lblAmt.innerText = "Biaya Iklan Ads (USD)";
+            } else if(type === 'withdrawal') {
+                lblAmt.innerText = "Jumlah Penarikan Riil (USD)";
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const type = document.getElementById('form-type').value;
+            const date = document.getElementById('input-date').value;
+            const amt = parseFloat(document.getElementById('input-amount').value);
+
+            if(type === 'project') {
+                globalState.projects.push({
+                    date,
+                    order_no: document.getElementById('input-order-no').value || "-",
+                    client: document.getElementById('input-client').value || "-",
+                    deadline: document.getElementById('input-deadline').value || "-",
+                    gross: amt,
+                    status_complete: document.getElementById('input-status-complete').checked,
+                    status_cleared: document.getElementById('input-status-cleared').checked
+                });
+            } else if(type === 'ads') {
+                globalState.ads.push({ id: globalState.ads.length + 1, date, amount: amt });
+            } else if(type === 'withdrawal') {
+                globalState.withdrawals.push({ date, amount: amt });
+            } else if(type === 'expense') {
+                globalState.savings_expenses.push({
+                    id: globalState.savings_expenses.length + 1,
+                    date,
+                    category: document.getElementById('input-category').value || "-",
+                    description: document.getElementById('input-description').value || "-",
+                    amount: amt
+                });
+            }
+
+            processAndRenderUI(globalState);
+            document.getElementById('dynamic-form').reset();
+            closeModal('modal-quick-add');
+        }
+
+        function openEditProjectModal(idx) {
+            currentEditProjectIndex = idx;
+            const project = globalState.projects[idx];
+            
+            document.getElementById('edit-p-date').value = project.date;
+            document.getElementById('edit-p-order-no').value = project.order_no;
+            document.getElementById('edit-p-client').value = project.client;
+            document.getElementById('edit-p-deadline').value = project.deadline;
+            document.getElementById('edit-p-gross').value = project.gross;
+            document.getElementById('edit-p-status-complete').checked = project.status_complete;
+            document.getElementById('edit-p-status-cleared').checked = project.status_cleared;
+            
+            openModal('modal-edit-project');
+        }
+
+        function handleEditProjectSubmit(e) {
+            e.preventDefault();
+            if(currentEditProjectIndex === null) return;
+
+            globalState.projects[currentEditProjectIndex] = {
+                date: document.getElementById('edit-p-date').value,
+                order_no: document.getElementById('edit-p-order-no').value,
+                client: document.getElementById('edit-p-client').value,
+                deadline: document.getElementById('edit-p-deadline').value,
+                gross: parseFloat(document.getElementById('edit-p-gross').value),
+                status_complete: document.getElementById('edit-p-status-complete').checked,
+                status_cleared: document.getElementById('edit-p-status-cleared').checked
+            };
+
+            processAndRenderUI(globalState);
+            closeModal('modal-edit-project');
+            currentEditProjectIndex = null;
+        }
+
+        function copyToClipboard() {
+            const area = document.getElementById('json-textarea');
+            area.select();
+            document.execCommand('copy');
+            alert('Kode JSON berhasil disalin! Silakan langsung paste di GitHub data.json Anda.');
+            closeModal('modal-json-export');
+        }
+
+        // RE-ENGINEERED DYNAMIC FILTER ENGINE FOR SCALE MATRIX (ANNUAL VS MONTHLY)
+        function renderKPICards() {
+            // 1. Calculate Full Annual Benchmark Metrics
+            let annualWithdrawal = 0;
+            globalState.withdrawals.forEach(w => annualWithdrawal += parseFloat(w.amount));
+            let annualExpenses = 0;
+            globalState.savings_expenses.forEach(e => annualExpenses += parseFloat(e.amount));
+            let annualRetained = 0;
+            let annualPotential = 0;
+            globalState.projects.forEach(p => {
+                const net = p.gross * 0.8;
+                if (p.status_complete && !p.status_cleared) annualRetained += net;
+                else if (!p.status_complete) annualPotential += net;
+            });
+            let annualSavingsBalance = (annualWithdrawal * 0.3) - annualExpenses;
+
+            // 2. Identify Current Active Filters
+            const selectedMonth = parseInt(document.getElementById('kpi-month-select').value);
+            
+            let displayWithdrawal = annualWithdrawal;
+            let displayExpenses = annualExpenses;
+            let displayRetained = annualRetained;
+            let displayPotential = annualPotential;
+            let displaySavings = annualSavingsBalance;
+
+            if (currentViewMode === "monthly") {
+                // Filter scopes for specific month
+                let monthlyWithdrawal = 0;
+                globalState.withdrawals.forEach(w => {
+                    if (new Date(w.date).getMonth() === selectedMonth) monthlyWithdrawal += parseFloat(w.amount);
+                });
+                let monthlyExpenses = 0;
+                globalState.savings_expenses.forEach(e => {
+                    if (new Date(e.date).getMonth() === selectedMonth) monthlyExpenses += parseFloat(e.amount);
+                });
+                let monthlyRetained = 0;
+                let monthlyPotential = 0;
+                globalState.projects.forEach(p => {
+                    if (new Date(p.date).getMonth() === selectedMonth) {
+                        const net = p.gross * 0.8;
+                        if (p.status_complete && !p.status_cleared) monthlyRetained += net;
+                        else if (!p.status_complete) monthlyPotential += net;
+                    }
+                });
+
+                displayWithdrawal = monthlyWithdrawal;
+                displayExpenses = monthlyExpenses;
+                displayRetained = monthlyRetained;
+                displayPotential = monthlyPotential;
+                displaySavings = (monthlyWithdrawal * 0.3) - monthlyExpenses;
+
+                // Set View Component Text Titles & Sub-benchmarks
+                document.getElementById('kpi-title-withdrawal').innerText = "Penarikan Bulan Ini";
+                document.getElementById('kpi-title-savings').innerText = "Arus Tabungan Bulan Ini";
+                document.getElementById('kpi-title-exp').innerText = "Pengeluaran Tabungan Bulan Ini";
+                document.getElementById('kpi-title-kartiko').innerText = "Hasil Kartiko Bulan Ini";
+                document.getElementById('kpi-title-afief').innerText = "Hasil Afief Bulan Ini";
+                document.getElementById('kpi-title-retained').innerText = "Laba Ditahan Bulan Ini";
+                document.getElementById('kpi-title-potential').innerText = "Potensi Laba Bulan Ini";
+
+                document.getElementById('kpi-sub-withdrawal').innerText = `Total Tahunan: ${fmt(annualWithdrawal)}`;
+                document.getElementById('kpi-sub-savings').innerText = `Total Tahunan: ${fmt(annualSavingsBalance)}`;
+                document.getElementById('kpi-sub-exp').innerText = `Total Tahunan: ${fmt(annualExpenses)}`;
+                document.getElementById('kpi-sub-kartiko').innerText = `Total Tahunan: ${fmt(annualWithdrawal * 0.35)}`;
+                document.getElementById('kpi-sub-afief').innerText = `Total Tahunan: ${fmt(annualWithdrawal * 0.35)}`;
+                document.getElementById('kpi-sub-retained').innerText = `Total Tahunan: ${fmt(annualRetained)}`;
+                document.getElementById('kpi-sub-potential').innerText = `Total Tahunan: ${fmt(annualPotential)}`;
+            } else {
+                // Return Titles to Annual Mode default state
+                document.getElementById('kpi-title-withdrawal').innerText = "Total Penarikan Riil";
+                document.getElementById('kpi-title-savings').innerText = "Saldo Kas Tabungan";
+                document.getElementById('kpi-title-exp').innerText = "Total Pengeluaran Tabungan";
+                document.getElementById('kpi-title-kartiko').innerText = "Hasil Kartiko (35%)";
+                document.getElementById('kpi-title-afief').innerText = "Hasil Afief (35%)";
+                document.getElementById('kpi-title-retained').innerText = "Laba Ditahan (Selesai)";
+                document.getElementById('kpi-title-potential').innerText = "Potensi Laba (Progress)";
+
+                // Display Monthly Averages as smart subtext
+                document.getElementById('kpi-sub-withdrawal').innerText = `Avg: ${fmt(annualWithdrawal / 12)} / bln`;
+                document.getElementById('kpi-sub-savings').innerText = `Avg: ${fmt(annualSavingsBalance / 12)} / bln`;
+                document.getElementById('kpi-sub-exp').innerText = `Avg: ${fmt(annualExpenses / 12)} / bln`;
+                document.getElementById('kpi-sub-kartiko').innerText = `Avg: ${fmt((annualWithdrawal * 0.35) / 12)} / bln`;
+                document.getElementById('kpi-sub-afief').innerText = `Avg: ${fmt((annualWithdrawal * 0.35) / 12)} / bln`;
+                document.getElementById('kpi-sub-retained').innerText = `Avg: ${fmt(annualRetained / 12)} / bln`;
+                document.getElementById('kpi-sub-potential').innerText = `Avg: ${fmt(annualPotential / 12)} / bln`;
+            }
+
+            // Inject Main Values to UI Screen
+            document.getElementById('kpi-total-withdrawal').innerText = fmt(displayWithdrawal);
+            document.getElementById('kpi-savings-balance').innerText = fmt(displaySavings);
+            document.getElementById('kpi-total-savings-expenses').innerText = fmt(displayExpenses);
+            document.getElementById('kpi-share-kartiko').innerText = fmt(displayWithdrawal * 0.35);
+            document.getElementById('kpi-share-afief').innerText = fmt(displayWithdrawal * 0.35);
+            document.getElementById('kpi-retained-uncured').innerText = fmt(displayRetained);
+            document.getElementById('kpi-potential-progress').innerText = fmt(displayPotential);
+        }
+
+        function processAndRenderUI(data) {
+            let monthlyWithdrawals = Array(12).fill(0);
+            let monthlySavingsExp = Array(12).fill(0);
+
+            // 1. Render Projects Tab View
+            const projBody = document.getElementById('table-projects-body');
+            projBody.innerHTML = "";
+            data.projects.forEach((p, idx) => {
+                const net = p.gross * 0.8;
+                projBody.innerHTML += `
+                    <tr class="hover:bg-slate-700/30 transition">
+                        <td class="p-4 font-mono text-xs">${p.date}</td>
+                        <td class="p-4 font-bold text-slate-200">${p.order_no}</td>
+                        <td class="p-4">${p.client}</td>
+                        <td class="p-4 font-mono text-xs text-slate-400">${p.deadline}</td>
+                        <td class="p-4 text-right">${fmt(p.gross)}</td>
+                        <td class="p-4 text-right text-slate-400">${fmt(p.gross * 0.2)}</td>
+                        <td class="p-4 text-right text-teal-400 font-bold">${fmt(net)}</td>
+                        <td class="p-4 text-center text-xs">${p.status_complete ? '✅ Selesai' : '⏳ Proses'}</td>
+                        <td class="p-4 text-center text-xs">${p.status_cleared ? '💰 Cair' : '🕒 Pending'}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="openEditProjectModal(${idx})" class="bg-slate-700 hover:bg-amber-500 hover:text-slate-950 text-amber-400 text-[11px] font-bold px-2.5 py-1 rounded border border-amber-500/20 hover:border-amber-500 transition cursor-pointer">
+                                ✏️ Edit
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // 2. Render Fiverr Ads Tab View
+            const adsBody = document.getElementById('table-ads-body');
+            adsBody.innerHTML = "";
+            data.ads.forEach(a => {
+                adsBody.innerHTML += `
+                    <tr class="hover:bg-slate-700/30 transition">
+                        <td class="p-4 text-center text-xs text-slate-500 font-mono">${a.id}</td>
+                        <td class="p-4 font-mono text-xs">${a.date}</td>
+                        <td class="p-4 text-right text-rose-400 font-semibold">${fmt(a.amount)}</td>
+                    </tr>
+                `;
+            });
+
+            // 3. Render Withdrawals Tab View
+            const witBody = document.getElementById('table-withdrawals-body');
+            witBody.innerHTML = "";
+            data.withdrawals.forEach(w => {
+                const amt = parseFloat(w.amount);
+                const monthIdx = new Date(w.date).getMonth();
+                if(monthIdx >= 0 && monthIdx < 12) monthlyWithdrawals[monthIdx] += amt;
+
+                witBody.innerHTML += `
+                    <tr class="hover:bg-slate-700/30 transition">
+                        <td class="p-4 font-mono text-xs">${w.date}</td>
+                        <td class="p-4 text-right font-bold text-slate-200">${fmt(amt)}</td>
+                        <td class="p-4 text-right text-amber-400 font-medium">${fmt(amt * 0.3)}</td>
+                        <td class="p-4 text-right text-blue-400 font-medium">${fmt(amt * 0.35)}</td>
+                        <td class="p-4 text-right text-purple-400 font-medium">${fmt(amt * 0.35)}</td>
+                    </tr>
+                `;
+            });
+
+            // 4. Render Savings Expenses Tab View
+            const expBody = document.getElementById('table-expenses-body');
+            expBody.innerHTML = "";
+            data.savings_expenses.forEach(e => {
+                const amt = parseFloat(e.amount);
+                const monthIdx = new Date(e.date).getMonth();
+                if(monthIdx >= 0 && monthIdx < 12) monthlySavingsExp[monthIdx] += amt;
+
+                expBody.innerHTML += `
+                    <tr class="hover:bg-slate-700/30 transition">
+                        <td class="p-4 text-center text-xs text-slate-500 font-mono">${e.id}</td>
+                        <td class="p-4 font-mono text-xs">${e.date}</td>
+                        <td class="p-4 font-bold text-slate-300">${e.category}</td>
+                        <td class="p-4 text-slate-400">${e.description}</td>
+                        <td class="p-4 text-right text-rose-400 font-bold">${fmt(amt)}</td>
+                    </tr>
+                `;
+            });
+
+            // Execute Calculation Engine Render
+            renderKPICards();
+
+            // 5. Render Dashboard Table Matrix Breakdown (12 Months Fixed)
+            const dashBody = document.getElementById('table-dashboard-body');
+            dashBody.innerHTML = "";
+            for(let i=0; i<12; i++) {
+                const mWith = monthlyWithdrawals[i];
+                dashBody.innerHTML += `
+                    <tr class="hover:bg-slate-700/20 transition ${mWith > 0 ? 'bg-slate-800/80' : 'bg-slate-800/20 text-slate-500'}">
+                        <td class="p-4 font-bold text-slate-300">${monthsName[i]}</td>
+                        <td class="p-4 text-right font-mono">${fmt(mWith)}</td>
+                        <td class="p-4 text-right text-amber-400 font-mono">${fmt(mWith * 0.3)}</td>
+                        <td class="p-4 text-right text-blue-400 font-mono">${fmt(mWith * 0.35)}</td>
+                        <td class="p-4 text-right text-purple-400 font-mono">${fmt(mWith * 0.35)}</td>
+                        <td class="p-4 text-right text-rose-400 font-mono">${fmt(monthlySavingsExp[i])}</td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Initialize Core Engine
+        fetch('data.json')
+            .then(res => res.json())
+            .then(data => {
+                globalState = data;
+                processAndRenderUI(globalState);
+                toggleFormFields();
+            })
+            .catch(err => console.error("Database JSON failed to synchronize:", err));
+    </script>
+</body>
+</html>
